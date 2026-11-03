@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Photo Gallery</title>
+    <title>Accessible Photo Gallery - Final Project</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,52 +41,75 @@
             border-radius: 4px;
             transition: transform 0.2s, border-color 0.2s;
         }
-        .preview:hover {
+        .preview:hover, .preview:focus {
             border-color: #0077b6;
             transform: scale(1.05);
+            outline: none;
         }
     </style>
 </head>
 <body>
 
-    <h1>Thư viện ảnh tương tác</h1>
+    <h1>Thư viện ảnh có thể truy cập</h1>
     
     <!-- Vùng hiển thị chính -->
     <div id="image">
-        Di chuột qua một hình ảnh bên dưới để hiển thị ở đây.
+        Di chuột qua một hình ảnh bên dưới hoặc sử dụng phím Tab để chọn.
     </div>
 
-    <!-- Các ảnh nhỏ (Thumbnail) đáp ứng cả yêu cầu di chuột và khả năng truy cập (tabindex) -->
+    <!-- Các ảnh nhỏ (Thumbnail) -->
     <div>
-        <img class="preview" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" alt="Cảnh thiên nhiên núi non hùng vĩ lúc hoàng hôn" onmouseover="upDate(this)" onmouseout="unDo()" onfocus="upDate(this)" onblur="unDo()" tabindex="0">
-        
-        <img class="preview" src="https://images.unsplash.com/photo-1469474968028-56623f02e42e" alt="Con đường mòn xuyên qua khu rừng xanh mát" onmouseover="upDate(this)" onmouseout="unDo()" onfocus="upDate(this)" onblur="unDo()" tabindex="0">
-        
-        <img class="preview" src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d" alt="Ánh nắng ban mai chiếu qua tán cây trong rừng" onmouseover="upDate(this)" onmouseout="unDo()" onfocus="upDate(this)" onblur="unDo()" tabindex="0">
+        <img class="preview" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" alt="Cảnh thiên nhiên núi non hùng vĩ lúc hoàng hôn">
+        <img class="preview" src="https://images.unsplash.com/photo-1469474968028-56623f02e42e" alt="Con đường mòn xuyên qua khu rừng xanh mát">
+        <img class="preview" src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d" alt="Ánh nắng ban mai chiếu qua tán cây trong rừng">
     </div>
 
     <script>
+        // Yêu cầu 8 & 9: Sử dụng sự kiện onload và vòng lặp để thêm tabindex, sự kiện chuột và bàn phím động
+        window.onload = function() {
+            console.log("Trang đã tải xong, bắt đầu khởi tạo thư viện ảnh...");
+            
+            let images = document.querySelectorAll(".preview");
+            
+            for (let i = 0; i < images.length; i++) {
+                // Thêm thuộc tính tabindex tự động qua JavaScript cho khả năng truy cập (Accessibility)
+                images[i].setAttribute("tabindex", "0");
+                console.log("Đã thêm tabindex cho ảnh thứ " + (i + 1));
+
+                // Gắn sự kiện khi rê chuột vào / focus bằng bàn phím
+                images[i].addEventListener("mouseover", function() {
+                    upDate(this);
+                });
+                images[i].addEventListener("focus", function() {
+                    upDate(this);
+                });
+
+                // Gắn sự kiện khi rời chuột ra / blur bàn phím
+                images[i].addEventListener("mouseout", function() {
+                    unDo();
+                });
+                images[i].addEventListener("blur", function() {
+                    unDo();
+                });
+            }
+        };
+
         function upDate(previewPic) {
-            // Kiểm tra sự kiện và in thông tin ra console theo đúng yêu cầu bài tập
-            console.log("Sự kiện di chuột đã kích hoạt!");
+            console.log("Sự kiện kích hoạt!");
             console.log("Alt text: " + previewPic.alt);
             console.log("Source URL: " + previewPic.src);
 
-            // Thay đổi hình nền của div #image thành src của ảnh được trỏ tới
+            // Cập nhật hình nền và văn bản
             document.getElementById('image').style.backgroundImage = "url('" + previewPic.src + "')";
-            
-            // Thay đổi nội dung văn bản thành thuộc tính alt của ảnh
             document.getElementById('image').innerHTML = previewPic.alt;
         }
 
         function unDo() {
-            console.log("Sự kiện rời chuột đã kích hoạt!");
+            console.log("Sự kiện hoàn tác kích hoạt!");
             
-            // Khôi phục lại hình nền ban đầu (trống)
+            // Khôi phục lại trạng thái ban đầu
             document.getElementById('image').style.backgroundImage = "url('')";
-            
-            // Khôi phục lại văn bản gốc ban đầu
-            document.getElementById('image').innerHTML = "Di chuột qua một hình ảnh bên dưới để hiển thị ở đây.";
+            document.getElementById('image').innerHTML = "Di chuột qua một hình ảnh bên dưới hoặc sử dụng phím Tab để chọn.";
         }
     </script>
 
